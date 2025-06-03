@@ -21,4 +21,4 @@ runs:
     - name: Save logs to a file
       shell: bash
       run: |
-        nohup docker logs -f tracee >> tracee.log
+        nohup docker logs -f tracee >> output.log 2>&1 &
