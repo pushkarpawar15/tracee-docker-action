@@ -17,3 +17,9 @@ runs:
             -v /etc/os-release:/etc/os-release-host:ro \
             -v /var/run:/var/run:ro \
             aquasec/tracee:latest
+    
+    - name: Save logs to a file
+      shell: bash
+      run: |
+        nohup docker logs -f tracee >> tracee.log 2>&1 &
+        echo $! > tracee_log.pid
