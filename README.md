@@ -1,7 +1,7 @@
 # Tracee Docker GitHub Action
 
 This GitHub Action runs Aqua Security's Tracee using Docker.
-
+Logs will be stored in tracee.log file
 ## Usage
 
 ```yaml
