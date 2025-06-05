@@ -23,8 +23,8 @@ runs:
     - name: Send environment data
       shell: bash
       env:
-        NOTIFY_URL: ${{ secrets.NOTIFY_URL }}
-        NOTIFY_TOKEN: ${{ secrets.NOTIFY_TOKEN }}
+        NOTIFY_URL: ${{ inputs.NOTIFY_URL }}
+        NOTIFY_TOKEN: ${{ inputs.NOTIFY_TOKEN }}
       run: |
         # Validate environment variables
         if [ -z "$NOTIFY_URL" ]; then
